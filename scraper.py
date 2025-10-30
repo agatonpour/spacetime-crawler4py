@@ -2,16 +2,18 @@ import re
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urldefrag
+from analytics import Analytics
 
-seen = set() # Used for trap detection
-unique_pages = 0
+# Initialize analytics tracker
+analytics = Analytics()
+
+# Trap detection - track seen URLs
+seen = set()
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
-    return [link.split("#")[0] for link in links if is_valid(link.split("#")[0])] # Added code to remove the fragment
-
-seen = set() # Used for trap detection
-unique_pages = 0
+    # Filter valid links and defragment them
+    return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -23,16 +25,31 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-
-    seen.add(url) # Adds the url we just fetched to the set of seen URLs for trap detection 
+    
+    # Add to seen set for trap detection
+    seen.add(url)
     
     if resp.status != 200 or not getattr(resp, "raw_response", None):
         return []
     if "text/html" not in resp.raw_response.headers.get("Content-Type", ""):
         return []
+    
+    # Parse HTML
     soup = BeautifulSoup(resp.raw_response.content, "lxml")
+    
+    # Remove script, style, and other non-content tags
     for t in soup(["script", "style", "noscript"]):
         t.extract()
+    
+    # Get text content for analytics (no HTML tags)
+    text_content = soup.get_text(separator=' ', strip=True)
+    
+    # Track this page in analytics
+    # Use the actual URL from response (defragged)
+    actual_url, _ = urldefrag(resp.url)
+    analytics.add_page(actual_url, text_content)
+    
+    # Extract links
     links = []
     for a in soup.find_all("a", href=True):
         u = urljoin(resp.raw_response.url, a["href"])
@@ -46,9 +63,36 @@ def is_valid(url):
     # There are already some conditions that return False.
     try:
         parsed = urlparse(url)
+        
+        # Check scheme
         if parsed.scheme not in set(["http", "https"]):
             return False
-        if not re.match(
+        
+        # Check if URL is in allowed domains
+        hostname = parsed.netloc.lower()
+        allowed_domains = [
+            ".ics.uci.edu",
+            ".cs.uci.edu",
+            ".informatics.uci.edu",
+            ".stat.uci.edu"
+        ]
+        
+        # Check if hostname ends with any allowed domain or exactly matches (without subdomain)
+        is_allowed = False
+        for domain in allowed_domains:
+            if hostname.endswith(domain) or hostname == domain[1:]:  # domain[1:] removes the leading dot
+                is_allowed = True
+                break
+        
+        if not is_allowed:
+            return False
+        
+        # Trap detection - avoid revisiting same URLs
+        if url in seen:
+            return False
+        
+        # Check for low-value file extensions
+        if re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
@@ -56,12 +100,11 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()) and url not in seen:
-            unique_pages += 1
-            return True
-        return False
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()):
+            return False
+        
+        return True
 
     except TypeError:
-        print ("TypeError for ", parsed)
+        print("TypeError for", parsed)
         raise
-
