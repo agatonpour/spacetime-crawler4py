@@ -3,9 +3,12 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urldefrag
 
+seen = set() # Used for trap detection
+unique_pages = 0
+
 def scraper(url, resp):
     links = extract_next_links(url, resp)
-    return [link for link in links if is_valid(link)]
+    return [link.split("#")[0] for link in links if is_valid(link.split("#")[0])] # Added code to remove the fragment
 
 seen = set() # Used for trap detection
 unique_pages = 0
@@ -20,6 +23,9 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
+
+    seen.add(url) # Adds the url we just fetched to the set of seen URLs for trap detection 
+    
     if resp.status != 200 or not getattr(resp, "raw_response", None):
         return []
     if "text/html" not in resp.raw_response.headers.get("Content-Type", ""):
@@ -50,7 +56,7 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()):
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower()) and url not in seen:
             unique_pages += 1
             return True
         return False
