@@ -10,6 +10,9 @@ def scraper(url, resp):
     links = extract_next_links(url, resp)
     return [link.split("#")[0] for link in links if is_valid(link.split("#")[0])] # Added code to remove the fragment
 
+seen = set() # Used for trap detection
+unique_pages = 0
+
 def extract_next_links(url, resp):
     # Implementation required.
     # url: the URL that was used to get the page
@@ -61,3 +64,4 @@ def is_valid(url):
     except TypeError:
         print ("TypeError for ", parsed)
         raise
+
