@@ -1,0 +1,93 @@
+============================================================
+WEB CRAWLER ANALYTICS REPORT
+============================================================
+
+1. Number of unique pages: 9821
+
+2. Longest page (by word count):
+   URL: https://ics.uci.edu/~fielding/pubs/dissertation/evaluation.htm
+   Word count: 11449
+
+3. 50 most common words:
+   1. media: 32893
+   2. wiki: 29647
+   3. support: 28832
+   4. tools: 25105
+   5. files: 24654
+   6. software: 18234
+   7. page: 16639
+   8. manager: 15890
+   9. s: 15718
+   10. search: 14915
+   11. upload: 13098
+   12. projects: 12886
+   13. history: 11714
+   14. services: 11626
+   15. 2021: 11493
+   16. research: 11385
+   17. revisions: 11128
+   18. show: 10948
+   19. site: 10899
+   20. labs: 10793
+   21. 2020: 10767
+   22. png: 10488
+   23. 2019: 10396
+   24. courses: 10206
+   25. file: 10200
+   26. group: 10056
+   27. hardware: 9997
+   28. accounts: 9949
+   29. 2016: 9741
+   30. 2018: 9701
+   31. 2017: 9690
+   32. pasted: 9532
+   33. 2015: 9497
+   34. student: 9477
+   35. windows: 9416
+   36. june: 9352
+   37. sitemap: 9312
+   38. linux: 9222
+   39. security: 9070
+   40. user: 9065
+   41. 2022: 8855
+   42. date: 8560
+   43. log: 8509
+   44. recent: 8496
+   45. changes: 8452
+   46. old: 8411
+   47. backlinks: 8269
+   48. webapps: 8131
+   49. namespaces: 8101
+   50. root: 8083
+
+4. Subdomains in uci.edu domain:
+   accessibility.ics.uci.edu, 2
+   archive-beta.ics.uci.edu, 11
+   archive.ics.uci.edu, 200
+   code.ics.uci.edu, 1
+   courselisting.ics.uci.edu, 1
+   cs.ics.uci.edu, 1
+   cs.uci.edu, 1
+   dgillen.ics.uci.edu, 32
+   graphics.ics.uci.edu, 1
+   hai.ics.uci.edu, 6
+   helpdesk.ics.uci.edu, 44
+   ics.uci.edu, 377
+   insite.ics.uci.edu, 9
+   intranet.ics.uci.edu, 747
+   mcs.ics.uci.edu, 2
+   mhcid.ics.uci.edu, 9
+   mover.ics.uci.edu, 24
+   observium.ics.uci.edu, 1
+   onboarding.ics.uci.edu, 3
+   seal.ics.uci.edu, 44
+   stat.ics.uci.edu, 2
+   summeracademy.ics.uci.edu, 6
+   wiki.ics.uci.edu, 7463
+   www.cs.uci.edu, 1
+   www.ics.uci.edu, 37
+   www.informatics.ics.uci.edu, 1
+   www.informatics.uci.edu, 777
+   www.stat.uci.edu, 18
+
+============================================================
